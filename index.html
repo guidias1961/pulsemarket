@@ -53,7 +53,7 @@
     <div class="container row">
       <div class="brand">PulseMarket</div>
       <div class="row" style="margin-left:auto; gap:10px;">
-        <input id="contractInput" value="0x189709E1812418Db310acE4A5F92fC5EceAccc2A" style="min-width:360px;" />
+        <input id="contractInput" placeholder="Paste deployed PulseMarket contract address" style="min-width:420px;" />
         <button id="setContractBtn" class="ghost">Use contract</button>
         <button id="connectBtn">Connect wallet</button>
       </div>
@@ -145,12 +145,18 @@
     }
 
     async function setContract(addr) {
-      if (!ethers.isAddress(addr)) { alert('Invalid address'); return; }
+      if (!ethers.isAddress(addr)) { alert('Invalid address. Paste your deployed PulseMarket contract'); return; }
       provider = new ethers.BrowserProvider(window.ethereum);
       signer = await provider.getSigner();
       contract = new ethers.Contract(addr, ABI, signer);
-      const treasury = await contract.TREASURY();
-      $('#treasuryStatus').textContent = 'Treasury: ' + short(treasury);
+      try {
+        const treasury = await contract.TREASURY();
+        $('#treasuryStatus').textContent = 'Treasury: ' + short(treasury);
+      } catch (e) {
+        alert('This address does not look like a PulseMarket contract. Deploy the contract and paste its address.');
+        contract = null;
+        return;
+      }
       const me = await signer.getAddress();
       $('#accountStatus').textContent = 'Account: ' + short(me);
       renderAdminIfOwner(me);
