@@ -4,25 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PulseMarket — Categorical Prediction Markets on PulseChain</title>
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="logo.png"/>
+
+  <!-- Codec Pro (fallbacks included) -->
   <link href="https://fonts.cdnfonts.com/css/codec-pro" rel="stylesheet">
   <style>
-    :root{--pulse-pink:#ff00ea;--pulse-cyan:#00c2ff;--pulse-purple:#6c2bd9;--text:#111827;--muted:#6b7280;--bg:#ffffff;--ring:rgba(108,43,217,.35);--border:#e5e7eb;--chip:#f3f4f6;--success:#065f46;--success-bg:#ecfdf5;--shadow:0 10px 30px rgba(0,0,0,.05)}*{box-sizing:border-box}
-    body{margin:0;font-family:"Codec Pro",ui-sans-serif,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,sans-serif;color:var(--text);background:var(--bg)}
-    header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+    :root{
+      --pulse-pink:#ff00ea;
+      --pulse-cyan:#00c2ff;
+      --pulse-purple:#6c2bd9;
+      --text:#111827;
+      --muted:#6b7280;
+      --bg:#ffffff;
+      --ring:rgba(108,43,217,.35);
+      --border:#e5e7eb;
+      --chip:#f3f4f6;
+      --success:#065f46;
+      --success-bg:#ecfdf5;
+      --shadow:0 10px 30px rgba(0,0,0,.05);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Codec Pro", ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+      color:var(--text);
+      background:var(--bg);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#fff; border-bottom:1px solid var(--border);
+    }
     .container{max-width:1120px;margin:0 auto;padding:14px 16px}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .brand img{height:28px;margin-right:8px;vertical-align:middle}
-    .brand{font-weight:900;font-size:20px;letter-spacing:.2px;background:linear-gradient(90deg,var(--pulse-purple),var(--pulse-pink),var(--pulse-cyan));-webkit-background-clip:text;background-clip:text;color:transparent;display:flex;align-items:center}
+    .brand{
+      font-weight:900;font-size:20px;letter-spacing:.2px;
+      background:linear-gradient(90deg,var(--pulse-purple),var(--pulse-pink),var(--pulse-cyan));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
     .spacer{flex:1}
-    .btn{cursor:pointer;border:0;padding:10px 14px;border-radius:12px;font-weight:800;letter-spacing:.2px;background:linear-gradient(90deg,var(--pulse-purple),var(--pulse-pink));color:#fff;box-shadow:0 8px 24px rgba(108,43,217,.25);transition:transform .06s ease, box-shadow .2s ease;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(108,43,217,.35)}
+    .btn{
+      cursor:pointer; border:0; padding:10px 14px; border-radius:12px;
+      font-weight:800; letter-spacing:.2px;
+      background:linear-gradient(90deg,var(--pulse-purple),var(--pulse-pink));
+      color:#fff; box-shadow:0 8px 24px rgba(108,43,217,.25);
+      transition:transform .06s ease, box-shadow .2s ease;
+      text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(108,43,217,.35)}
     .btn.ghost{background:#fff;color:var(--pulse-purple);border:2px solid var(--pulse-purple);box-shadow:none}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-weight:700;font-size:12px;background:#fff}
+    .pill{
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;
+      border:1px solid var(--border);border-radius:999px;font-weight:700;font-size:12px;background:#fff;
+    }
+
     main{padding:16px 0}
-    .notice{background:#f9fafb;border:1px dashed var(--border);padding:12px;border-radius:12px;font-size:13px;color:var(--muted);margin-bottom:16px}
+    .notice{
+      background:#f9fafb;border:1px dashed var(--border);padding:12px;border-radius:12px;
+      font-size:13px;color:var(--muted);margin-bottom:16px
+    }
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-    .card{grid-column:span 12;border:1px solid var(--border);border-radius:16px;padding:16px;background:#fff;box-shadow:var(--shadow)}
+    .card{
+      grid-column:span 12; border:1px solid var(--border); border-radius:16px;
+      padding:16px; background:#fff; box-shadow:var(--shadow)
+    }
     @media(min-width:900px){.card{grid-column:span 6}}
     .title{font-weight:900;font-size:18px;margin:0 0 10px}
     .meta{color:var(--muted);font-size:13px;margin:6px 0}
@@ -45,7 +91,9 @@
 <body>
   <header>
     <div class="container row">
-      <div class="brand"><img src="logo.png" alt="Logo">PulseMarket</div>
+      <!-- Logo ao lado do nome -->
+      <img src="logo.png" alt="PulseMarket logo" width="28" height="28" style="margin-right:8px;border-radius:4px"/>
+      <div class="brand">PulseMarket</div>
       <div id="networkPill" class="pill">Network: unknown</div>
       <div id="accountPill" class="pill">Disconnected</div>
       <div class="spacer"></div>
@@ -54,7 +102,237 @@
       <button id="connectBtn" class="btn">Connect wallet</button>
     </div>
   </header>
-  <!-- rest of body unchanged, omitted for brevity -->
+
+  <main class="container">
+    <div class="notice">
+      Bets use native PLS. A 2% fee goes to treasury, collected by the contract. Pools are pari-mutuel. After resolution, winners claim pro-rata. Built for PulseChain mainnet only.
+    </div>
+
+    <section id="markets" class="grid"></section>
+
+    <div class="footer">PulseMarket. Simple, credible, no nonsense. Built for PulseChain.</div>
+  </main>
+
+  <script src="https://unpkg.com/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <script>
+    // Config
+    const DEFAULT_CONTRACT = "0x3178c732cAB0854f52334DDC603493171AbDd70E"; // your deployed V2
+    const PULSE = {
+      chainId: "0x171",
+      chainName: "PulseChain",
+      nativeCurrency: { name: "Pulse", symbol: "PLS", decimals: 18 },
+      rpcUrls: ["https://rpc.pulsechain.com"],
+      blockExplorerUrls: ["https://scan.pulsechain.com"]
+    };
+    // Set your links here
+    const BUY_URL = "https://app.libertyswap.fi/";      // replace with your buy link
+    const TWITTER_URL = "https://x.com/ofcpulsemarket";    // replace with your Twitter
+
+    // ABI (must match PulseMarketV2)
+    const ABI = [
+      { inputs:[], name:"marketsLength", outputs:[{type:"uint256"}], stateMutability:"view", type:"function" },
+      { inputs:[{type:"uint256"}], name:"getMarket", outputs:[
+          {type:"string"}, {type:"uint256"}, {type:"bool"}, {type:"uint8"},
+          {type:"uint256"}, {type:"bytes32"}, {type:"string"}
+        ], stateMutability:"view", type:"function" },
+      { inputs:[{type:"uint256"}], name:"outcomesLength", outputs:[{type:"uint256"}], stateMutability:"view", type:"function" },
+      { inputs:[{type:"uint256"},{type:"uint256"}], name:"outcomeName", outputs:[{type:"string"}], stateMutability:"view", type:"function" },
+      { inputs:[{type:"uint256"},{type:"uint256"}], name:"outcomePool", outputs:[{type:"uint256"}], stateMutability:"view", type:"function" },
+      { inputs:[{type:"uint256"},{type:"uint8"}], name:"placeBet", outputs:[], stateMutability:"payable", type:"function" },
+      { inputs:[{type:"uint256"},{type:"uint8"}], name:"resolveMarket", outputs:[], stateMutability:"nonpayable", type:"function" },
+      { inputs:[{type:"uint256"}], name:"claim", outputs:[], stateMutability:"nonpayable", type:"function" },
+      { inputs:[{type:"uint256"},{type:"uint256"},{type:"address"}], name:"userStake", outputs:[{type:"uint256"}], stateMutability:"view", type:"function" },
+      { inputs:[], name:"FEE_BPS", outputs:[{type:"uint256"}], stateMutability:"pure", type:"function" }
+    ];
+
+    // Utils
+    const $ = sel => document.querySelector(sel);
+    const fmt = wei => ethers.formatEther(wei);
+    const toWei = eth => ethers.parseEther(eth);
+    const short = a => a.slice(0,6) + "..." + a.slice(-4);
+    const tsToUTC = ts => new Date(Number(ts)*1000).toUTCString();
+
+    // State
+    let provider, signer, contract;
+    let FEE_BPS = 200;
+
+    // Header links
+    document.getElementById("buyBtn").href = BUY_URL;
+    document.getElementById("twitterBtn").href = TWITTER_URL;
+
+    // Wallet + network
+    async function ensurePulse(){
+      if(!window.ethereum) throw new Error("No wallet found");
+      const chainId = await window.ethereum.request({ method:"eth_chainId" });
+      if(chainId !== PULSE.chainId){
+        try{
+          await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId:PULSE.chainId }] });
+        }catch(err){
+          if(err && err.code === 4902){
+            await window.ethereum.request({ method:"wallet_addEthereumChain", params:[PULSE] });
+          } else { throw err; }
+        }
+      }
+      $("#networkPill").textContent = "Network: PulseChain";
+    }
+
+    async function connect(){
+      await ensurePulse();
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      const me = await signer.getAddress();
+      $("#accountPill").textContent = "Account: " + short(me);
+      contract = new ethers.Contract(DEFAULT_CONTRACT, ABI, signer);
+      try { FEE_BPS = Number(await contract.FEE_BPS()); } catch {}
+      await render();
+    }
+
+    $("#connectBtn").onclick = () => connect().catch(e=>alert(e.message||String(e)));
+    if(window.ethereum){
+      window.ethereum.on("chainChanged", ()=>location.reload());
+      window.ethereum.on("accountsChanged", ()=>location.reload());
+    }
+
+    // Rendering
+    async function render(){
+      const root = $("#markets");
+      root.innerHTML = "";
+      let n = 0;
+      try { n = Number(await contract.marketsLength()); } catch(e){
+        root.innerHTML = `<div class="card"><div class="title">Unable to read markets</div><div class="meta">${e.message||e}</div></div>`;
+        return;
+      }
+      if(n === 0){
+        root.innerHTML = `<div class="card"><div class="title">No markets yet</div><div class="meta">Come back later.</div></div>`;
+        return;
+      }
+      for(let i=0;i<n;i++){
+        const m = await contract.getMarket(i);
+        const question = m[0];
+        const deadline = Number(m[1]);
+        const resolved = m[2];
+        const winner = Number(m[3]);
+        const k = Number(m[4]);
+        const criteriaHash = m[5];
+        const source = m[6];
+
+        const pools = [];
+        const names = [];
+        let total = 0n;
+        for(let j=0;j<k;j++){
+          const name = await contract.outcomeName(i,j);
+          const pool = await contract.outcomePool(i,j);
+          names.push(name); pools.push(pool); total += pool;
+        }
+
+        const status = resolved
+          ? `Resolved • Winner: ${winner < k ? names[winner] : "n/a"}`
+          : (Date.now()/1000 < deadline ? "Open" : "Awaiting resolution");
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        let outsHtml = "";
+        for(let j=0;j<k;j++){
+          const pool = pools[j];
+          const name = names[j];
+          const odds = total===0n ? 0 : Number(pool*10000n/total)/100;
+          outsHtml += `
+            <div class="out">
+              <div class="out-top">
+                <div><strong>${escapeHtml(name)}</strong></div>
+                <div class="row" style="gap:6px">
+                  <span class="chip">Pool ${fmt(pool)} PLS</span>
+                  <span class="odds">Implied ${odds.toFixed(2)}%</span>
+                </div>
+              </div>
+              <div class="row" style="gap:8px;flex-wrap:wrap">
+                <input type="number" min="0" step="0.0001" placeholder="Amount in PLS" class="amt" ${resolved?'disabled':''}/>
+                <button class="btn bet" ${resolved?'disabled':''}>Bet</button>
+              </div>
+              <div class="est"></div>
+            </div>
+          `;
+        }
+
+        const statusClass = resolved ? "status-res" : (Date.now()/1000 < deadline ? "status-open" : "status-wait");
+
+        card.innerHTML = `
+          <div class="row-between">
+            <h3 class="title">${escapeHtml(question)}</h3>
+            <span class="pill ${statusClass}">${status}</span>
+          </div>
+          <div class="meta">ID ${i} • Deadline UTC ${tsToUTC(deadline)} • Total ${fmt(total)} PLS</div>
+          <div class="outcomes">${outsHtml}</div>
+          <div class="row" style="gap:10px;flex-wrap:wrap">
+            <button class="btn ghost claim" ${resolved?'':'disabled'}>Claim</button>
+            <span class="meta">Criteria hash ${criteriaHash} • Source ${escapeHtml(source||'')}</span>
+          </div>
+          <div class="meta">Fee is ${Number(FEE_BPS)/100}% netted from your input. Payout is pari-mutuel on the winning outcome.</div>
+        `;
+
+        const outEls = card.querySelectorAll(".out");
+        outEls.forEach((outEl, idx)=>{
+          const amtEl = outEl.querySelector(".amt");
+          const estEl = outEl.querySelector(".est");
+
+          function recalc(){
+            const v = amtEl.value.trim();
+            if(!v || Number(v)<=0){ estEl.textContent=""; return; }
+            try{
+              const val = toWei(v);
+              const fee = val * BigInt(FEE_BPS) / 10000n;
+              const stake = val - fee;
+              const winnersAfter = pools[idx] + stake;
+              const totalAfter = total + stake;
+              if(winnersAfter===0n){ estEl.textContent=""; return; }
+              const payout = totalAfter * stake / winnersAfter;
+              const profit = payout - val;
+              const roi = (Number(payout*10000n/val)-10000)/100;
+              estEl.innerHTML = `If this outcome wins: ~ <strong>${fmt(payout)}</strong> PLS back • profit ${fmt(profit)} • ROI ${roi.toFixed(2)}%`;
+            }catch{ estEl.textContent=""; }
+          }
+          amtEl.addEventListener("input", recalc);
+
+          outEl.querySelector(".bet").onclick = async ()=>{
+            const v = amtEl.value.trim();
+            if(!v || Number(v)<=0){ alert("Enter amount"); return; }
+            try{
+              const tx = await contract.placeBet(i, idx, { value: toWei(v) });
+              await tx.wait();
+              await render();
+            }catch(e){ alert(e.message || String(e)); }
+          };
+        });
+
+        card.querySelector(".claim").onclick = async ()=>{
+          try{
+            const tx = await contract.claim(i);
+            await tx.wait();
+            await render();
+          }catch(e){ alert(e.message || String(e)); }
+        };
+
+        $("#markets").appendChild(card);
+      }
+    }
+
+    function escapeHtml(str){ return (str||"").replace(/[&<>"]/g, s=>({"&":"&amp;","<":"&lt;"," >":"&gt;",'"':"&quot;"}[s])); }
+
+    // Auto-init display with read-only provider so the page shows even before connect
+    (async function initReadonly(){
+      try{
+        $("#buyBtn").href = BUY_URL;
+        $("#twitterBtn").href = TWITTER_URL;
+        $("#networkPill").textContent = "Network: PulseChain";
+        // read-only JSON-RPC
+        const ro = new ethers.JsonRpcProvider(PULSE.rpcUrls[0]);
+        contract = new ethers.Contract(DEFAULT_CONTRACT, ABI, ro);
+        try { FEE_BPS = Number(await contract.FEE_BPS()); } catch {}
+        await render();
+      }catch(e){ console.warn(e); }
+    })();
+  </script>
 </body>
 </html>
 
