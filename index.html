@@ -53,8 +53,7 @@
     <div class="container row">
       <div class="brand">PulseMarket</div>
       <div class="row" style="margin-left:auto; gap:10px;">
-        <input id="contractInput" placeholder="Paste deployed PulseMarket contract address" style="min-width:420px;" />
-        <button id="setContractBtn" class="ghost">Use contract</button>
+        <div id="contractPill" class="pill">Contract: 0x2a4C...09C3</div>
         <button id="connectBtn">Connect wallet</button>
       </div>
     </div>
@@ -98,6 +97,18 @@
       rpcUrls: ['https://rpc.pulsechain.com'],
       blockExplorerUrls: ['https://scan.pulsechain.com']
     };
+    const DEFAULT_CONTRACT = '0x2a4CACAbf39ea12e2E64a6D1C2B2cbFA0c0B09C3';
+    function getContractAddress() {
+      const qp = new URLSearchParams(location.search).get('contract');
+      const stored = localStorage.getItem('pm_contract');
+      if (qp && ethers.isAddress(qp)) return qp;
+      if (stored && ethers.isAddress(stored)) return stored;
+      return DEFAULT_CONTRACT;
+    }
+    function setContractPill(addr) {
+      const el = document.querySelector('#contractPill');
+      if (el) el.textContent = 'Contract: ' + short(addr);
+    }
 
     const ABI = [
       { "inputs": [], "name": "marketsLength", "outputs": [{"internalType":"uint256","name":"","type":"uint256"}], "stateMutability":"view", "type":"function" },
@@ -159,6 +170,8 @@
       }
       const me = await signer.getAddress();
       $('#accountStatus').textContent = 'Account: ' + short(me);
+      localStorage.setItem('pm_contract', addr);
+      setContractPill(addr);
       renderAdminIfOwner(me);
       await renderMarkets();
     }
@@ -240,7 +253,8 @@
         await ensurePulse();
         const accs = await window.ethereum.request({ method: 'eth_requestAccounts' });
         $('#accountStatus').textContent = 'Account: ' + short(accs[0]);
-        await setContract($('#contractInput').value.trim());
+        const addr = getContractAddress();
+        await setContract(addr);
       } catch (e) { alert(e.message || String(e)); }
     };
 
