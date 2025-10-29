@@ -46,6 +46,8 @@
     .footer { margin-top: 40px; padding: 24px; text-align: center; color: var(--muted); border-top: 1px solid #e5e7eb; }
     .notice { background: #f9fafb; border: 1px dashed #e5e7eb; padding: 10px 12px; border-radius: 12px; font-size: 13px; }
     .admin { border: 1px solid #e5e7eb; border-radius: 14px; padding: 12px; background: #fafafa; }
+    .est { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .est strong { color: var(--text); }
   </style>
 </head>
 <body>
@@ -188,6 +190,7 @@
     async function renderMarkets() {
       const el = $('#markets');
       el.innerHTML = '';
+      if (!window._feeBps) { try { window._feeBps = Number(await contract.FEE_BPS()); } catch { window._feeBps = 200; } }
       const n = Number(await contract.marketsLength());
       for (let i = 0; i < n; i++) {
         const m = await contract.markets(i);
@@ -215,8 +218,35 @@
             <button class="betNo" ${(!open || m.resolved) ? 'disabled' : ''}>Bet NO</button>
             <button class="claim" ${m.resolved ? '' : 'disabled'}>Claim</button>
           </div>
+          <div class="est yesEst"></div>
+          <div class="est noEst"></div>
           <div class="meta" style="margin-top:8px;">Fee is 2%. Bets are final. If winning side has zero stake, owner can sweep to treasury for that market.</div>
         `;
+
+        const amtEl = card.querySelector('.amt');
+        const yesEstEl = card.querySelector('.yesEst');
+        const noEstEl = card.querySelector('.noEst');
+        function estText(betYes){
+          const v = amtEl.value.trim();
+          if(!v || Number(v)<=0) return '';
+          try{
+            const valueWei = ethers.parseEther(v);
+            const feeBps = BigInt(window._feeBps ?? 200);
+            const feeWei = valueWei * feeBps / 10000n;
+            const stakeWei = valueWei - feeWei;
+            const yesPool = m.totalYes;
+            const noPool = m.totalNo;
+            const winnersAfter = betYes ? yesPool + stakeWei : noPool + stakeWei;
+            const poolAfter = yesPool + noPool + stakeWei;
+            if(winnersAfter === 0n) return '';
+            const payoutWei = poolAfter * stakeWei / winnersAfter;
+            const profitWei = payoutWei - valueWei;
+            const roiBps = valueWei === 0n ? 0n : (payoutWei * 10000n / valueWei) - 10000n;
+            return `If ${betYes?'YES':'NO'} wins: ~ ${fmt(payoutWei)} PLS back • profit ${fmt(profitWei)} • ROI ${(Number(roiBps)/100).toFixed(2)}% (net of 2% fee)`;
+          } catch { return ''; }
+        }
+        function recalc(){ yesEstEl.textContent = estText(true); noEstEl.textContent = estText(false); }
+        amtEl.addEventListener('input', recalc); recalc();
 
         card.querySelector('.betYes').onclick = async () => {
           const v = card.querySelector('.amt').value.trim();
